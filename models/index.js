@@ -23,12 +23,8 @@ async function autoCreateTable(db) {
     data TEXT
   );`);
 }
-function LogService(db) {
-  // if (db && db.db) {
-  //   db = db.db;
-  // }
-  // console.log(db);
 
+function LogService(db) {
   return {
     close: () => db.close(),
     getAll: ({query, params}) => db.all(query, params),
@@ -48,11 +44,8 @@ function LogService(db) {
           JSON.stringify(data),
         ]
       );
-      // .catch(console.error);
     },
   };
 };
 
-module.exports = {
-  setupLogger
-};
+module.exports = { setupLogger };

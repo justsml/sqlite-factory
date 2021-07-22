@@ -1,15 +1,12 @@
 const { setupLogger } = require("./index");
-let logger;
 
+let logger;
 beforeAll(async () => {
   // logger = await setupLogger(); // in-memory
   logger = await setupLogger({filePath: './db.sqlite'}); // on file-system
 });
 
-afterAll(async () => {
-  await logger.close();
-});
-
+afterAll(async () => await logger.close());
 
 test("can add logs", async () => {
   const result = await logger.insert({
@@ -19,10 +16,6 @@ test("can add logs", async () => {
     lineNumber: 24,
     data: { row: [1, 2, 3, "fake data!"] },
   });
-  // const count = await db.get(`SELECT COUNT(*) FROM logs WHERE action = ?`, [
-  //   "test",
-  // ]);
-  // console.log({ count });
   expect(result).toBeDefined();
 });
 
@@ -35,7 +28,3 @@ test("can query single rows", async () => {
   const {count} = await logger.get({query: `SELECT COUNT(*) as count FROM logs WHERE action = ?`, params: ["test"]});
   expect(count).toBeGreaterThanOrEqual(1);
 });
-
-// test('Fails on invalid path', async () => {
-//   expect(async () => await setupLogger({filePath: '/\\/\\/\\$%^*\t\n.invalid-file'})).toThrowError(/SQLITE_CANTOPEN/ig);
-// })
