@@ -96,7 +96,7 @@ test("can query multiple rows", function () { return __awaiter(void 0, void 0, v
     });
 }); });
 test("can query single rows", function () { return __awaiter(void 0, void 0, void 0, function () {
-    var count;
+    var result, count;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, logger.get({
@@ -104,7 +104,8 @@ test("can query single rows", function () { return __awaiter(void 0, void 0, voi
                     params: ["test"],
                 })];
             case 1:
-                count = (_a.sent()).count;
+                result = _a.sent();
+                count = (result || {}).count;
                 expect(count).toBeGreaterThanOrEqual(1);
                 return [2 /*return*/];
         }

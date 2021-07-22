@@ -7,6 +7,8 @@ const config = {
     "/build/",
   ],
   verbose: true,
+  collectCoverage: true,
+  coverageDirectory: "coverage",
 
 };
 

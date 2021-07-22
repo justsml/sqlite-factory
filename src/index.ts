@@ -47,8 +47,8 @@ async function autoCreateTable({
   createTableSql: string;
 }) {
   if (!/CREATE\s+TABLE/gi.test(createTableSql))
-    throw new Error(
-      `The createTableCommand parameter must include 'CREATE TABLE'.`
+    return Promise.reject(
+      new Error(`The createTableCommand parameter must include 'CREATE TABLE'.`)
     );
   return await db.exec(createTableSql);
 }
@@ -101,7 +101,13 @@ function SqlWrapper<TRow>({
       return db.run(
         `UPDATE ${tableName} SET
         ${keyBindingList.join(", ")}
-        ${where ? `WHERE ${whereExpression}` : ""}
+        ${
+          whereExpression
+            ? `WHERE ${whereExpression}`
+            : where?.keyBindingList
+            ? `WHERE ${where!.keyBindingList.join(", ")}`
+            : ""
+        }
       `,
         { ...paramsWithPrefix, ...where?.paramsWithPrefix }
       );
