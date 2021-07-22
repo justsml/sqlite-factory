@@ -26,8 +26,8 @@ export default function modelFactory<TRow>({ filePath, tableName, createTableSql
      * @returns {void}
      */
     close: () => Promise<void>;
-    getAll<TResults = TRow[]>({ query, params }: IQueryParams<any>): Promise<TResults>;
-    get<TResult = TRow>({ query, params }: IQueryParams<any>): Promise<TResult | undefined>;
+    getAll<TResults = TRow[]>({ query, params, }: IQueryParams<any>): Promise<TResults>;
+    get<TResult = TRow>({ query, params, }: IQueryParams<any>): Promise<TResult | undefined>;
     insert: (params: SqlParams<TRow>) => Promise<import("sqlite").ISqlite.RunResult<sqlite3.Statement>>;
     update: (params: SqlParams<TRow>, whereParams?: SqlParams<TRow> | null | undefined, whereExpression?: string | null | undefined) => Promise<import("sqlite").ISqlite.RunResult<sqlite3.Statement>>;
     remove: (whereParams: SqlParams<TRow>, whereExpression: string) => Promise<import("sqlite").ISqlite.RunResult<sqlite3.Statement>>;

@@ -44,7 +44,11 @@ var logger;
 beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, index_1.default({ tableName: "logs", filePath: "./db.sqlite", createTableSql: "CREATE TABLE IF NOT EXISTS logs (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n    action VARCHAR(50),\n    error_message TEXT,\n    error_stack TEXT,\n    source_file_name VARCHAR(100),\n    source_line_number INTEGER,\n    data TEXT\n  );" })];
+            case 0: return [4 /*yield*/, index_1.default({
+                    tableName: "logs",
+                    filePath: "./db.sqlite",
+                    createTableSql: "CREATE TABLE IF NOT EXISTS logs (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n    action VARCHAR(50),\n    error_message TEXT,\n    error_stack TEXT,\n    source_file_name VARCHAR(100),\n    source_line_number INTEGER,\n    data TEXT\n  );",
+                })];
             case 1:
                 // logger = await setupLogger(); // in-memory
                 logger = _a.sent(); // on file-system
@@ -64,10 +68,10 @@ test("can add logs", function () { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0: return [4 /*yield*/, logger.insert({
                     action: "test",
-                    error: null,
-                    sourceFile: "test.json",
-                    lineNumber: 24,
-                    data: { row: [1, 2, 3, "fake data!"] },
+                    // error: null,
+                    source_file_name: "test.json",
+                    source_line_number: 24,
+                    data: JSON.stringify({ row: [1, 2, 3, "fake data!"] }),
                 })];
             case 1:
                 result = _a.sent();

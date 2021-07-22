@@ -66,7 +66,7 @@ sqlite3_1.default.verbose();
 function modelFactory(_a) {
     var _b = _a === void 0 ? {
         createTableSql: "",
-        tableName: "[TABLE_NAME]"
+        tableName: "[TABLE_NAME]",
     } : _a, filePath = _b.filePath, tableName = _b.tableName, createTableSql = _b.createTableSql;
     return __awaiter(this, void 0, void 0, function () {
         var db;
@@ -121,12 +121,12 @@ function SqlWrapper(_a) {
         },
         insert: function (params) {
             var _a = generateParams(params), keys = _a.keys, keysWithPrefix = _a.keysWithPrefix, paramsWithPrefix = _a.paramsWithPrefix;
-            return db.run("\n      INSERT INTO " + tableName + " (\n        " + keys.join(', ') + "\n      ) VALUES (" + keysWithPrefix.join(', ') + ")", paramsWithPrefix);
+            return db.run("\n      INSERT INTO " + tableName + " (\n        " + keys.join(", ") + "\n      ) VALUES (" + keysWithPrefix.join(", ") + ")", paramsWithPrefix);
         },
         update: function (params, whereParams, whereExpression) {
             var _a = generateParams(params), keyBindingList = _a.keyBindingList, paramsWithPrefix = _a.paramsWithPrefix;
             var where = whereParams ? generateParams(whereParams) : null;
-            return db.run("UPDATE " + tableName + " SET\n        " + keyBindingList.join(', ') + "\n        " + (where ? "WHERE " + whereExpression : '') + "\n      ", __assign(__assign({}, paramsWithPrefix), where === null || where === void 0 ? void 0 : where.paramsWithPrefix));
+            return db.run("UPDATE " + tableName + " SET\n        " + keyBindingList.join(", ") + "\n        " + (where ? "WHERE " + whereExpression : "") + "\n      ", __assign(__assign({}, paramsWithPrefix), where === null || where === void 0 ? void 0 : where.paramsWithPrefix));
         },
         remove: function (whereParams, whereExpression) {
             var paramsWithPrefix = generateParams(whereParams).paramsWithPrefix;
