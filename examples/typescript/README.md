@@ -9,6 +9,10 @@
 
 #### `src/index.ts`
 
+**Important notes:**
+
+* Remember to close the database when done.
+  * In this example we listen for exit events on the `process`.
 
 ```ts
 import Logs from "./models/logs";
@@ -17,14 +21,15 @@ Logs.insert({action: "script_started"});
 
 // Cleanup & Final Save handler!
 process.on('SIGTERM', async () => await Logs.close());
+process.on('SIGINT', async () => await Logs.close());
 ```
 
 #### `src/models/logs.ts`
 
-Important notes:
+**Important notes:**
 
 * The Model exported here is effectively a singleton.
-* It includes the typescript type & sql `CREATE TABLE` script.
+* It includes the typescript type & SQL `CREATE TABLE` script.
 
 ```ts
 import modelFactory from "./index";
@@ -40,7 +45,7 @@ interface LogRecord {
   data: string; // TEXT
 }
 
-const logService = await modelFactory<LogRecord>({
+const logService = modelFactory<LogRecord>({
   tableName: "logs",
   filePath: "./db.sqlite",
   createTableSql: `CREATE TABLE IF NOT EXISTS logs (
@@ -54,7 +59,6 @@ const logService = await modelFactory<LogRecord>({
     data TEXT
   );`,
 });
-
 
 export default logService;
 ```

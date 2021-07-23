@@ -1,7 +1,4 @@
 import modelFactory from "./index";
-type ThenArgRecursive<T> = T extends PromiseLike<infer U>
-  ? ThenArgRecursive<U>
-  : T;
 
 interface LogRecord {
   id: number; // INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,10 +11,10 @@ interface LogRecord {
   data: string; // TEXT
 }
 
-let logger: ThenArgRecursive<ReturnType<typeof modelFactory>>;
+let logger: ReturnType<typeof modelFactory>;
 
 beforeAll(async () => {
-  logger = await modelFactory<LogRecord>({
+  logger = modelFactory<LogRecord>({
     tableName: "logs",
     filePath: "./db.sqlite",
     createTableSql: `
@@ -70,14 +67,14 @@ test("invalid CREATE TABLE argument", async () => {
       filePath: "./db.sqlite",
       createTableSql: `(bad script)`,
     })
-  ).rejects.toBeDefined();
+  ).toThrow();
 });
 
-test("invalid arguments", () => {
+test("can handle invalid arguments", () => {
   expect(async () => await modelFactory<LogRecord>()).rejects.toThrowError();
 });
 
-test("in-memory mode", async () => {
+test("can use in-memory mode", async () => {
   const customers = await modelFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
