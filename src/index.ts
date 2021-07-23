@@ -22,12 +22,12 @@ interface IQueryParams<TParamRow = any> {
 }
 
 /**
- * modelFactory creates a CRUD derived sqlite wrapper.
+ * sqliteFactory creates a CRUD derived sqlite wrapper.
  *
  * It accepts a SQL create table expression (e.g. 'CREATE TABLE...').
  *
  * ```js
- * const logService = modelFactory({
+ * const logService = sqliteFactory({
  *   tableName: "logs",
  *   filePath: "./db.sqlite",
  *   createTableSql: `CREATE TABLE IF NOT EXISTS logs (
@@ -47,7 +47,7 @@ interface IQueryParams<TParamRow = any> {
  * @param options.createTableSql {string}
  * @returns
  */
-export default function modelFactory<TRow>(
+export default function sqliteFactory<TRow>(
   { filePath, tableName, createTableSql }: ISqlFactoryParams = {
     createTableSql: "",
     tableName: "",

@@ -32,9 +32,9 @@ process.on('SIGINT', async () => await Logs.close());
 * It includes the SQL `CREATE TABLE` script.
 
 ```js
-import modelFactory from "./index";
+import sqliteFactory from "sqlite-factory";
 
-const logService = modelFactory({
+const logService = sqliteFactory({
   tableName: "logs",
   filePath: "./db.sqlite",
   createTableSql: `CREATE TABLE IF NOT EXISTS logs (

@@ -1,4 +1,4 @@
-import modelFactory from "./index";
+import sqliteFactory from "./index";
 
 interface LogRecord {
   id: number; // INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -11,10 +11,10 @@ interface LogRecord {
   data: string; // TEXT
 }
 
-let logger: ReturnType<typeof modelFactory>;
+let logger: ReturnType<typeof sqliteFactory>;
 
 beforeAll(async () => {
-  logger = modelFactory<LogRecord>({
+  logger = sqliteFactory<LogRecord>({
     tableName: "logs",
     filePath: "./db.sqlite",
     createTableSql: `
@@ -62,7 +62,7 @@ test("can query single rows", async () => {
 
 test("invalid CREATE TABLE argument", async () => {
   expect(() =>
-    modelFactory<LogRecord>({
+    sqliteFactory<LogRecord>({
       tableName: "logs",
       filePath: "./db.sqlite",
       createTableSql: `(bad script)`,
@@ -71,11 +71,11 @@ test("invalid CREATE TABLE argument", async () => {
 });
 
 test("can handle invalid arguments", () => {
-  expect(async () => modelFactory<LogRecord>()).rejects.toThrowError();
+  expect(async () => sqliteFactory<LogRecord>()).rejects.toThrowError();
 });
 
 test("can use in-memory mode", async () => {
-  const customers = modelFactory<{ name: string }>({
+  const customers = sqliteFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });
@@ -86,7 +86,7 @@ test("can use in-memory mode", async () => {
 });
 
 test("can update", async () => {
-  const customers = modelFactory<{ name: string }>({
+  const customers = sqliteFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });
@@ -100,7 +100,7 @@ test("can update", async () => {
 });
 
 test("can update with custom WHERE clause", async () => {
-  const customers = modelFactory<{ name: string }>({
+  const customers = sqliteFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });
@@ -115,7 +115,7 @@ test("can update with custom WHERE clause", async () => {
 });
 
 test("can update entire table", async () => {
-  const customers = modelFactory<{ name: string }>({
+  const customers = sqliteFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });
@@ -124,7 +124,7 @@ test("can update entire table", async () => {
 });
 
 test("can remove with custom WHERE clause", async () => {
-  const customers = modelFactory<{ name: string }>({
+  const customers = sqliteFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });
@@ -135,7 +135,7 @@ test("can remove with custom WHERE clause", async () => {
 });
 
 test("can remove entire table", async () => {
-  const customers = modelFactory<{ name: string }>({
+  const customers = sqliteFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });

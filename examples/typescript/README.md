@@ -32,7 +32,7 @@ process.on('SIGINT', async () => await Logs.close());
 * It includes the typescript type & SQL `CREATE TABLE` script.
 
 ```ts
-import modelFactory from "./index";
+import sqliteFactory from "sqlite-factory";
 
 interface LogRecord {
   id: number; // INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,7 +45,7 @@ interface LogRecord {
   data: string; // TEXT
 }
 
-const logService = modelFactory<LogRecord>({
+const logService = sqliteFactory<LogRecord>({
   tableName: "logs",
   filePath: "./db.sqlite",
   createTableSql: `CREATE TABLE IF NOT EXISTS logs (

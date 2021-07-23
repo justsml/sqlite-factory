@@ -10,7 +10,7 @@ interface IQueryParams<TParamRow = any> {
     params: Array<string | number | boolean | Date | any> | Record<string, any> | TParamRow;
 }
 /**
- * modelFactory creates a CRUD derived sqlite wrapper.
+ * sqliteFactory creates a CRUD derived sqlite wrapper.
  *
  * It accepts a SQL create table expression (e.g. 'CREATE TABLE...').
  *
@@ -19,7 +19,7 @@ interface IQueryParams<TParamRow = any> {
  * @param options.createTableSql {string}
  * @returns
  */
-export default function modelFactory<TRow>({ filePath, tableName, createTableSql }?: ISqlFactoryParams): Promise<{
+export default function sqliteFactory<TRow>({ filePath, tableName, createTableSql }?: ISqlFactoryParams): Promise<{
     /**
      * CRITICAL: Do not forget to call `[model].close()`!
      *

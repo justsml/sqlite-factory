@@ -54,7 +54,7 @@ process.on('SIGINT', async () => await Logs.close());
 * It includes the typescript type & SQL `CREATE TABLE` script.
 
 ```ts
-import modelFactory from "./index";
+import sqliteFactory from "sqlite-factory";
 
 interface LogRecord {
   id: number; // INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,7 +67,7 @@ interface LogRecord {
   data: string; // TEXT
 }
 
-logService = modelFactory<LogRecord>({
+logService = sqliteFactory<LogRecord>({
   tableName: "logs",
   filePath: "./db.sqlite",
   createTableSql: `CREATE TABLE IF NOT EXISTS logs (
@@ -91,13 +91,13 @@ export default logService;
 For the following API examples, most use this example interface:
 
 ```ts
-const customerModel = modelFactory<{ name: string }>({
+const customerModel = sqliteFactory<{ name: string }>({
   tableName: "customers",
   createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
 });
 ```
 
-- [`**modelFactory()**`](#modelfactoryoptions)
+- [`**sqliteFactory()**`](#sqliteFactoryoptions)
 
 - [`Model#close()`](#close)
 - [`Model#get(query, params)`](#getquery-params)
@@ -110,7 +110,7 @@ const customerModel = modelFactory<{ name: string }>({
   - [ ] TODO: [Model#run(sql, [param, ...])](#runsql-param)
   - [ ] TODO: [Model#each(sql, [param, ...], [complete])](#eachsql-param-complete) -->
 
-### `modelFactory(options)`
+### `sqliteFactory(options)`
 
 **`options`**
 
@@ -126,7 +126,7 @@ Must be a complete SQL DML Statement. Should start with `CREATE TABLE IF NOT EXI
 #### In-memory example
 
 ```ts
-const customers = modelFactory({
+const customers = sqliteFactory({
   tableName: "customers",
   createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
 });
@@ -135,7 +135,7 @@ const customers = modelFactory({
 #### Disk-based example
 
 ```js
-const customers = modelFactory({
+const customers = sqliteFactory({
   tableName: "customers",
   createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   filePath: "./customers.sqlite"
@@ -182,7 +182,7 @@ There are three ways of passing bind parameters:
 Input is automatically sanitized.
 
 ```ts
-const customerModel = modelFactory<{ name: string }>({
+const customerModel = sqliteFactory<{ name: string }>({
   tableName: "customers",
   createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
 });

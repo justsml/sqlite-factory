@@ -54,7 +54,7 @@ var sqlite3_1 = __importDefault(require("sqlite3"));
 var sqlite_1 = require("sqlite");
 sqlite3_1.default.verbose();
 /**
- * modelFactory creates a CRUD derived sqlite wrapper.
+ * sqliteFactory creates a CRUD derived sqlite wrapper.
  *
  * It accepts a SQL create table expression (e.g. 'CREATE TABLE...').
  *
@@ -63,7 +63,7 @@ sqlite3_1.default.verbose();
  * @param options.createTableSql {string}
  * @returns
  */
-function modelFactory(_a) {
+function sqliteFactory(_a) {
     var _b = _a === void 0 ? {
         createTableSql: "",
         tableName: "[TABLE_NAME]",
@@ -87,7 +87,7 @@ function modelFactory(_a) {
         });
     });
 }
-exports.default = modelFactory;
+exports.default = sqliteFactory;
 function autoCreateTable(_a) {
     var db = _a.db, createTableSql = _a.createTableSql;
     return __awaiter(this, void 0, void 0, function () {
