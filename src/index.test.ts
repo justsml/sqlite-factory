@@ -71,11 +71,11 @@ test("invalid CREATE TABLE argument", async () => {
 });
 
 test("can handle invalid arguments", () => {
-  expect(async () => await modelFactory<LogRecord>()).rejects.toThrowError();
+  expect(async () => modelFactory<LogRecord>()).rejects.toThrowError();
 });
 
 test("can use in-memory mode", async () => {
-  const customers = await modelFactory<{ name: string }>({
+  const customers = modelFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });
@@ -86,7 +86,7 @@ test("can use in-memory mode", async () => {
 });
 
 test("can update", async () => {
-  const customers = await modelFactory<{ name: string }>({
+  const customers = modelFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });
@@ -100,7 +100,7 @@ test("can update", async () => {
 });
 
 test("can update with custom WHERE clause", async () => {
-  const customers = await modelFactory<{ name: string }>({
+  const customers = modelFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });
@@ -115,7 +115,7 @@ test("can update with custom WHERE clause", async () => {
 });
 
 test("can update entire table", async () => {
-  const customers = await modelFactory<{ name: string }>({
+  const customers = modelFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });
@@ -124,7 +124,7 @@ test("can update entire table", async () => {
 });
 
 test("can remove with custom WHERE clause", async () => {
-  const customers = await modelFactory<{ name: string }>({
+  const customers = modelFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });
@@ -135,7 +135,7 @@ test("can remove with custom WHERE clause", async () => {
 });
 
 test("can remove entire table", async () => {
-  const customers = await modelFactory<{ name: string }>({
+  const customers = modelFactory<{ name: string }>({
     tableName: "customers",
     createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   });

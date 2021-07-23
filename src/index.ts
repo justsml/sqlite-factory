@@ -27,7 +27,7 @@ interface IQueryParams<TParamRow = any> {
  * It accepts a SQL create table expression (e.g. 'CREATE TABLE...').
  *
  * ```js
- * const logService = await modelFactory({
+ * const logService = modelFactory({
  *   tableName: "logs",
  *   filePath: "./db.sqlite",
  *   createTableSql: `CREATE TABLE IF NOT EXISTS logs (

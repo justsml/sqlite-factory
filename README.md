@@ -97,7 +97,7 @@ const customerModel = modelFactory<{ name: string }>({
 });
 ```
 
-- [**modelFactory()**](#modelfactoryoptions)
+- [`**modelFactory()**`](#modelfactoryoptions)
 
 - [`Model#close()`](#close)
 - [`Model#get(query, params)`](#getquery-params)
@@ -126,7 +126,7 @@ Must be a complete SQL DML Statement. Should start with `CREATE TABLE IF NOT EXI
 #### In-memory example
 
 ```ts
-const customers = await modelFactory({
+const customers = modelFactory({
   tableName: "customers",
   createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
 });
@@ -135,7 +135,7 @@ const customers = await modelFactory({
 #### Disk-based example
 
 ```js
-const customers = await modelFactory({
+const customers = modelFactory({
   tableName: "customers",
   createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
   filePath: "./customers.sqlite"
@@ -182,7 +182,7 @@ There are three ways of passing bind parameters:
 Input is automatically sanitized.
 
 ```ts
-const customerModel = await modelFactory<{ name: string }>({
+const customerModel = modelFactory<{ name: string }>({
   tableName: "customers",
   createTableSql: `CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )`,
 });
