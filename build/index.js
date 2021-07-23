@@ -58,6 +58,22 @@ sqlite3_1.default.verbose();
  *
  * It accepts a SQL create table expression (e.g. 'CREATE TABLE...').
  *
+ * ```js
+ * const logService = sqliteFactory({
+ *   tableName: "logs",
+ *   filePath: "./db.sqlite",
+ *   createTableSql: `CREATE TABLE IF NOT EXISTS logs (
+ *     id INTEGER PRIMARY KEY AUTOINCREMENT,
+ *     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ *     action VARCHAR(50),
+ *     error_message TEXT,
+ *     error_stack TEXT,
+ *     source_file_name VARCHAR(100),
+ *     source_line_number INTEGER,
+ *     data TEXT
+ *   );`,
+ * });
+ * ```
  *
  * @param options.filePath {string}
  * @param options.createTableSql {string}
@@ -66,26 +82,18 @@ sqlite3_1.default.verbose();
 function sqliteFactory(_a) {
     var _b = _a === void 0 ? {
         createTableSql: "",
-        tableName: "[TABLE_NAME]",
+        tableName: "",
     } : _a, filePath = _b.filePath, tableName = _b.tableName, createTableSql = _b.createTableSql;
-    return __awaiter(this, void 0, void 0, function () {
-        var db;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0: return [4 /*yield*/, sqlite_1.open({
-                        filename: filePath || ":memory:",
-                        driver: sqlite3_1.default.Database,
-                    })];
-                case 1:
-                    db = _c.sent();
-                    db.on("error", console.error);
-                    return [4 /*yield*/, autoCreateTable({ db: db, createTableSql: createTableSql })];
-                case 2:
-                    _c.sent();
-                    return [2 /*return*/, SqlWrapper({ db: db, tableName: tableName })];
-            }
-        });
+    if (!/CREATE\s+TABLE/gi.test(createTableSql))
+        throw new Error("The createTableCommand parameter must include 'CREATE TABLE'.");
+    var db = sqlite_1.open({
+        filename: filePath || ":memory:",
+        driver: sqlite3_1.default.Database,
+    }).then(function (db) {
+        db.on("error", console.error);
+        return autoCreateTable({ db: db, createTableSql: createTableSql }).then(function (db) { return db; });
     });
+    return SqlWrapper({ db: db, tableName: tableName });
 }
 exports.default = sqliteFactory;
 function autoCreateTable(_a) {
@@ -93,11 +101,10 @@ function autoCreateTable(_a) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_b) {
             switch (_b.label) {
-                case 0:
-                    if (!/CREATE\s+TABLE/gi.test(createTableSql))
-                        throw new Error("The createTableCommand parameter must include 'CREATE TABLE'.");
-                    return [4 /*yield*/, db.exec(createTableSql)];
-                case 1: return [2 /*return*/, _b.sent()];
+                case 0: return [4 /*yield*/, db.exec(createTableSql)];
+                case 1:
+                    _b.sent();
+                    return [2 /*return*/, db];
             }
         });
     });
@@ -110,31 +117,89 @@ function SqlWrapper(_a) {
          *
          * @returns {void}
          */
-        close: function () { return db.close(); },
+        close: function () {
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, db];
+                        case 1: return [2 /*return*/, (_a.sent()).close()];
+                    }
+                });
+            });
+        },
         getAll: function (_a) {
             var query = _a.query, params = _a.params;
-            return db.all(query, params);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4 /*yield*/, db];
+                        case 1: return [2 /*return*/, (_b.sent()).all(query, params)];
+                    }
+                });
+            });
         },
         get: function (_a) {
             var query = _a.query, params = _a.params;
-            return db.get(query, params);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4 /*yield*/, db];
+                        case 1: return [2 /*return*/, (_b.sent()).get(query, params)];
+                    }
+                });
+            });
         },
         insert: function (params) {
-            var _a = generateParams(params), keys = _a.keys, keysWithPrefix = _a.keysWithPrefix, paramsWithPrefix = _a.paramsWithPrefix;
-            return db.run("\n      INSERT INTO " + tableName + " (\n        " + keys.join(", ") + "\n      ) VALUES (" + keysWithPrefix.join(", ") + ")", paramsWithPrefix);
+            return __awaiter(this, void 0, void 0, function () {
+                var _a, keys, keysWithPrefix, paramsWithPrefix;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _a = parseParams(params), keys = _a.keys, keysWithPrefix = _a.keysWithPrefix, paramsWithPrefix = _a.paramsWithPrefix;
+                            return [4 /*yield*/, db];
+                        case 1: return [2 /*return*/, (_b.sent()).run("\n      INSERT INTO " + tableName + " (\n        " + keys.join(", ") + "\n      ) VALUES (" + keysWithPrefix.join(", ") + ")", paramsWithPrefix)];
+                    }
+                });
+            });
         },
         update: function (params, whereParams, whereExpression) {
-            var _a = generateParams(params), keyBindingList = _a.keyBindingList, paramsWithPrefix = _a.paramsWithPrefix;
-            var where = whereParams ? generateParams(whereParams) : null;
-            return db.run("UPDATE " + tableName + " SET\n        " + keyBindingList.join(", ") + "\n        " + (where ? "WHERE " + whereExpression : "") + "\n      ", __assign(__assign({}, paramsWithPrefix), where === null || where === void 0 ? void 0 : where.paramsWithPrefix));
+            return __awaiter(this, void 0, void 0, function () {
+                var _a, keyBindingList, paramsWithPrefix, where;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _a = parseParams(params), keyBindingList = _a.keyBindingList, paramsWithPrefix = _a.paramsWithPrefix;
+                            where = whereParams ? parseParams(whereParams) : null;
+                            return [4 /*yield*/, db];
+                        case 1: 
+                        /* istanbul ignore next */
+                        return [2 /*return*/, (_b.sent()).run("UPDATE " + tableName + " SET\n        " + keyBindingList.join(", ") + "\n        " + (whereExpression
+                                ? "WHERE " + whereExpression
+                                : (where === null || where === void 0 ? void 0 : where.keyBindingList)
+                                    ? "WHERE " + where.keyBindingList.join(", ")
+                                    : "") + "\n      ", __assign(__assign({}, paramsWithPrefix), where === null || where === void 0 ? void 0 : where.paramsWithPrefix))];
+                    }
+                });
+            });
         },
         remove: function (whereParams, whereExpression) {
-            var paramsWithPrefix = generateParams(whereParams).paramsWithPrefix;
-            return db.run("DELETE FROM " + tableName + " WHERE " + whereExpression, paramsWithPrefix);
+            return __awaiter(this, void 0, void 0, function () {
+                var paramsWithPrefix;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            paramsWithPrefix = parseParams(whereParams).paramsWithPrefix;
+                            return [4 /*yield*/, db];
+                        case 1: 
+                        /* istanbul ignore next */
+                        return [2 /*return*/, (_a.sent()).run("DELETE FROM " + tableName + " WHERE " + whereExpression, paramsWithPrefix)];
+                    }
+                });
+            });
         },
     };
 }
-function generateParams(params) {
+function parseParams(params) {
     var keys = Object.keys(params);
     var keysWithPrefix = keys.map(function (k) { return ":" + k; });
     var keyBindingList = keys.map(function (key) { return key + " = :" + key; });

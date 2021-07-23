@@ -43,17 +43,12 @@ var index_1 = __importDefault(require("./index"));
 var logger;
 beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, index_1.default({
-                    tableName: "logs",
-                    filePath: "./db.sqlite",
-                    createTableSql: "CREATE TABLE IF NOT EXISTS logs (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n    action VARCHAR(50),\n    error_message TEXT,\n    error_stack TEXT,\n    source_file_name VARCHAR(100),\n    source_line_number INTEGER,\n    data TEXT\n  );",
-                })];
-            case 1:
-                // logger = await setupLogger(); // in-memory
-                logger = _a.sent(); // on file-system
-                return [2 /*return*/];
-        }
+        logger = index_1.default({
+            tableName: "logs",
+            filePath: "./db.sqlite",
+            createTableSql: "\nCREATE TABLE IF NOT EXISTS logs (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  action VARCHAR(50),\n  error_message TEXT,\n  error_stack TEXT,\n  source_file_name VARCHAR(100),\n  source_line_number INTEGER,\n  data TEXT\n);",
+        }); // on file-system
+        return [2 /*return*/];
     });
 }); });
 afterAll(function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
@@ -68,7 +63,6 @@ test("can add logs", function () { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0: return [4 /*yield*/, logger.insert({
                     action: "test",
-                    // error: null,
                     source_file_name: "test.json",
                     source_line_number: 24,
                     data: JSON.stringify({ row: [1, 2, 3, "fake data!"] }),
@@ -109,6 +103,94 @@ test("can query single rows", function () { return __awaiter(void 0, void 0, voi
                 expect(count).toBeGreaterThanOrEqual(1);
                 return [2 /*return*/];
         }
+    });
+}); });
+test("invalid CREATE TABLE argument", function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        expect(function () {
+            return index_1.default({
+                tableName: "logs",
+                filePath: "./db.sqlite",
+                createTableSql: "(bad script)",
+            });
+        }).toThrow();
+        return [2 /*return*/];
+    });
+}); });
+test("can handle invalid arguments", function () {
+    expect(function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
+        return [2 /*return*/, index_1.default()];
+    }); }); }).rejects.toThrowError();
+});
+test("can use in-memory mode", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var customers;
+    return __generator(this, function (_a) {
+        customers = index_1.default({
+            tableName: "customers",
+            createTableSql: "CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )",
+        });
+        expect(customers.insert({ name: "test" })).resolves.toHaveProperty("changes", 1);
+        return [2 /*return*/];
+    });
+}); });
+test("can update", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var customers;
+    return __generator(this, function (_a) {
+        customers = index_1.default({
+            tableName: "customers",
+            createTableSql: "CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )",
+        });
+        expect(customers.insert({ name: "test" })).resolves.toHaveProperty("changes", 1);
+        expect(customers.update({ name: "dan" }, { name: "test" })).resolves.toHaveProperty("changes", 1);
+        return [2 /*return*/];
+    });
+}); });
+test("can update with custom WHERE clause", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var customers;
+    return __generator(this, function (_a) {
+        customers = index_1.default({
+            tableName: "customers",
+            createTableSql: "CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )",
+        });
+        expect(customers.insert({ name: "test" })).resolves.toBeDefined();
+        expect(customers.update({ name: "dan" }, { name: "test" }, "NAME = :name AND NAME != 'admin'")).resolves.toBeDefined();
+        return [2 /*return*/];
+    });
+}); });
+test("can update entire table", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var customers;
+    return __generator(this, function (_a) {
+        customers = index_1.default({
+            tableName: "customers",
+            createTableSql: "CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )",
+        });
+        expect(customers.insert({ name: "test" })).resolves.toBeDefined();
+        expect(customers.update({ name: "dan" })).resolves.toBeDefined();
+        return [2 /*return*/];
+    });
+}); });
+test("can remove with custom WHERE clause", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var customers;
+    return __generator(this, function (_a) {
+        customers = index_1.default({
+            tableName: "customers",
+            createTableSql: "CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )",
+        });
+        expect(customers.insert({ name: "test" })).resolves.toBeDefined();
+        expect(customers.remove({ name: "dan" }, "name = :name AND name != 'admin'")).resolves.toBeDefined();
+        return [2 /*return*/];
+    });
+}); });
+test("can remove entire table", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var customers;
+    return __generator(this, function (_a) {
+        customers = index_1.default({
+            tableName: "customers",
+            createTableSql: "CREATE TABLE IF NOT EXISTS customers ( name VARCHAR(50) )",
+        });
+        expect(customers.insert({ name: "test" })).resolves.toHaveProperty("changes");
+        expect(customers.remove({ name: "dan" }, "name = :name")).resolves.toBeDefined();
+        return [2 /*return*/];
     });
 }); });
 //# sourceMappingURL=index.test.js.map
